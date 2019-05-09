@@ -20,9 +20,9 @@ spec:
             mountPath: /data/db
       volumes:
         - name: mongo-persistent-storage
-          hostPath:
-            path: /tmp/udemy/k8s/data/db
-            type: DirectoryOrCreate
+          # pointer to the configuration of HOW we want the mount to be implemented
+          persistentVolumeClaim:
+            claimName: mongo-pvc
 ---
 kind: Service
 apiVersion: v1
