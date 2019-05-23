@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package sum;
+option java_package = "com.proto.sum";
+
+message ToSum {
+    int32 first = 1;
+    int32 second = 2;
+}
+
+message ToSumRequest {
+    ToSum toSum = 1;
+}
+
+message ToSumResponse {
+    int32 result = 1;
+}
+
+service ToSumService {
+    // Unary
+    rpc sum(ToSumRequest) returns (ToSumResponse) {};
+}

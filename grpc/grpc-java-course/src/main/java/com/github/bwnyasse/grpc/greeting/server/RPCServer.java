@@ -5,7 +5,7 @@ import io.grpc.ServerBuilder;
 
 import java.io.IOException;
 
-public class GreetingServer {
+public class RPCServer {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println(" Hello gRPC");
@@ -13,6 +13,7 @@ public class GreetingServer {
         // Init the server
         Server server = ServerBuilder.forPort(50051)
                 .addService(new GreetServiceImpl())
+                .addService(new ToSumServiceImpl())
                 .build();
 
         server.start();
