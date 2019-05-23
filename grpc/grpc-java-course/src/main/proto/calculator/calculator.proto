@@ -4,6 +4,9 @@ package calculator;
 option java_package = "com.proto.calculator";
 option java_multiple_files = true;
 
+/********************
+*   SUM
+*********************/
 message ToSumRequest {
     int32 first = 1;
     int32 second = 2;
@@ -13,7 +16,22 @@ message ToSumResponse {
     int32 result = 1;
 }
 
+/********************
+*   PRIME DECOMPOSITION
+*********************/
+message PrimeDecompoRequest {
+    int32 entry = 1;
+}
+
+message PrimeDecompoResponse {
+
+    int32 prime_factor = 1;
+}
+
 service CalculatorService {
     // Unary
     rpc sum(ToSumRequest) returns (ToSumResponse) {};
+
+    // prime Decomposition
+    rpc primeDecompo(PrimeDecompoRequest) returns (stream PrimeDecompoResponse) {};
 }

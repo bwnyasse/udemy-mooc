@@ -5,6 +5,8 @@ import com.proto.calculator.CalculatorServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
+import java.util.Iterator;
+
 public class CalculatorClient {
 
     public static void main(String[] args) {
@@ -16,15 +18,41 @@ public class CalculatorClient {
 
         // create the client
         CalculatorServiceGrpc.CalculatorServiceBlockingStub calculatorClient = CalculatorServiceGrpc.newBlockingStub(channel);
+        sumRPCCall(calculatorClient);
+        primedecompoRPCCall(calculatorClient);
 
-        // SUM
+        channel.shutdown();
+    }
+
+    private static void sumRPCCall(CalculatorServiceGrpc.CalculatorServiceBlockingStub calculatorClient) {
+
+        int first = 3;
+        int second = 10;
+
         // build the request
-        ToSumRequest request = ToSumRequest.newBuilder().setFirst(3).setSecond(10).build();
-
+        ToSumRequest request = ToSumRequest.newBuilder()
+                .setFirst(first)
+                .setSecond(second)
+                .build();
+        System.out.println(" SUM : " + first +" & " + second + " ----");
         // call The RCP , send the request & get the response
         ToSumResponse response = calculatorClient.sum(request);
         System.out.println(response.getResult());
+    }
 
-        channel.shutdown();
+    private static void primedecompoRPCCall(CalculatorServiceGrpc.CalculatorServiceBlockingStub calculatorClient) {
+
+        int entry = 120;
+        PrimeDecompoRequest request = PrimeDecompoRequest.newBuilder()
+                .setEntry(120)
+                .build();
+
+        System.out.println(" PRIME DECOMPO  of " + entry + "  ----");
+
+        calculatorClient.primeDecompo(request).forEachRemaining(response -> {
+            System.out.println(response.getPrimeFactor());
+        });
+
+
     }
 }

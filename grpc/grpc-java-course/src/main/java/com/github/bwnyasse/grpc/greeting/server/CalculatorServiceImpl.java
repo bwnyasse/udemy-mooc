@@ -17,4 +17,28 @@ public class CalculatorServiceImpl extends CalculatorServiceGrpc.CalculatorServi
 
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void primeDecompo(PrimeDecompoRequest request, StreamObserver<PrimeDecompoResponse> responseObserver) {
+
+        primedecompoAlgo(request.getEntry(),responseObserver);
+        responseObserver.onCompleted();
+    }
+
+    private void primedecompoAlgo(int entry, StreamObserver<PrimeDecompoResponse> responseObserver) {
+        int k = 2;
+        int N = entry;
+
+        while (N > 1) {
+            if (N % k == 0) {
+                PrimeDecompoResponse response = PrimeDecompoResponse.newBuilder()
+                        .setPrimeFactor(k)
+                        .build();
+                responseObserver.onNext(response);
+                N = N / k;
+            } else {
+                k++;
+            }
+        }
+    }
 }
