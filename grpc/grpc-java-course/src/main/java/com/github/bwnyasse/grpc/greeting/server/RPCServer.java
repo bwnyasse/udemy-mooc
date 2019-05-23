@@ -13,7 +13,7 @@ public class RPCServer {
         // Init the server
         Server server = ServerBuilder.forPort(50051)
                 .addService(new GreetServiceImpl())
-                .addService(new ToSumServiceImpl())
+                .addService(new CalculatorServiceImpl())
                 .build();
 
         server.start();
