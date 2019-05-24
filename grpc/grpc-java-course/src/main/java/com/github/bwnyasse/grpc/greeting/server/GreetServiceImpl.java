@@ -4,6 +4,8 @@ import com.proto.greet.*;
 import com.proto.greet.GreetServiceGrpc.GreetServiceImplBase;
 import io.grpc.stub.StreamObserver;
 
+import java.util.stream.Stream;
+
 public class GreetServiceImpl extends GreetServiceImplBase {
 
     //@Override
@@ -52,5 +54,40 @@ public class GreetServiceImpl extends GreetServiceImplBase {
 
         }
         //super.greetManyTimes(request, responseObserver);
+    }
+
+    @Override
+    public StreamObserver<LongGreetRequest> longGreet(StreamObserver<LongGreetResponse> responseObserver) {
+        StreamObserver<LongGreetRequest> streamObserverOfRequest = new StreamObserver<LongGreetRequest>() {
+
+            String result = "";
+
+            @Override
+            public void onNext(LongGreetRequest value) {
+                // Client sends a message
+
+                // Everything we receive message from client, we add it in the result
+                result += " Hello " + value.getGreeting().getFirstName() + " | ";
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                // Client sends an error
+            }
+
+            @Override
+            public void onCompleted() {
+                // client is done
+                // This is when we want to return a response ( responseObserver )
+                responseObserver.onNext(
+                        LongGreetResponse
+                                .newBuilder()
+                                .setResult(result)
+                                .build());
+                responseObserver.onCompleted();
+                ;
+            }
+        };
+        return streamObserverOfRequest;
     }
 }
