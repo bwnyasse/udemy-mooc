@@ -28,10 +28,24 @@ message PrimeDecompoResponse {
     int32 prime_factor = 1;
 }
 
+/********************
+*   COMPUTE AVERAGE
+*********************/
+message ComputeAverageRequest {
+    int32 entry = 1;
+}
+
+message ComputeAverageResponse {
+    double result = 1;
+}
+
 service CalculatorService {
     // Unary
     rpc sum(ToSumRequest) returns (ToSumResponse) {};
 
     // prime Decomposition
     rpc primeDecompo(PrimeDecompoRequest) returns (stream PrimeDecompoResponse) {};
+
+    // compute average of an entry
+    rpc computeAverage(stream ComputeAverageRequest) returns (ComputeAverageResponse) {};
 }
