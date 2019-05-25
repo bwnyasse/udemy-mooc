@@ -39,6 +39,17 @@ message ComputeAverageResponse {
     double result = 1;
 }
 
+/********************
+*   FIND MAXIMUM
+*********************/
+message FindMaximumRequest {
+    int32 entry = 1;
+}
+
+message FindMaximumResponse {
+    int32 result = 1;
+}
+
 service CalculatorService {
     // Unary
     rpc sum(ToSumRequest) returns (ToSumResponse) {};
@@ -48,4 +59,7 @@ service CalculatorService {
 
     // compute average of an entry
     rpc computeAverage(stream ComputeAverageRequest) returns (ComputeAverageResponse) {};
+
+    // find maximum
+    rpc findMaximum(stream FindMaximumRequest) returns (stream FindMaximumResponse) {};
 }

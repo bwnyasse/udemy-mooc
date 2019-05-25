@@ -7,6 +7,7 @@ import io.grpc.stub.StreamObserver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.OptionalInt;
 
 public class CalculatorServiceImpl extends CalculatorServiceGrpc.CalculatorServiceImplBase {
 
@@ -60,6 +61,37 @@ public class CalculatorServiceImpl extends CalculatorServiceGrpc.CalculatorServi
         };
     }
 
+    @Override
+    public StreamObserver<FindMaximumRequest> findMaximum(StreamObserver<FindMaximumResponse> responseObserver) {
+
+        return new StreamObserver<FindMaximumRequest>() {
+
+            int currentMax = 0;
+
+            @Override
+            public void onNext(FindMaximumRequest value) {
+
+                int entry = value.getEntry();
+                if(entry > currentMax){
+                    currentMax = entry;
+                    responseObserver.onNext(FindMaximumResponse.newBuilder()
+                            .setResult(currentMax)
+                            .build());
+                }
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onCompleted() {
+                responseObserver.onCompleted();
+            }
+        };
+    }
 
     private void primedecompoAlgo(int entry, StreamObserver<PrimeDecompoResponse> responseObserver) {
         int k = 2;
