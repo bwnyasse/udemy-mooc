@@ -2,6 +2,7 @@ package com.github.bwnyasse.grpc.greeting.server;
 
 import com.proto.calculator.*;
 import com.proto.calculator.CalculatorServiceGrpc;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 import java.util.ArrayList;
@@ -91,6 +92,26 @@ public class CalculatorServiceImpl extends CalculatorServiceGrpc.CalculatorServi
                 responseObserver.onCompleted();
             }
         };
+    }
+
+    @Override
+    public void squareRoot(SquareRootRequest request, StreamObserver<SquareRootResponse> responseObserver) {
+        int number = request.getNumber();
+
+        if(number > 0){
+            double numberRoot = Math.sqrt(number);
+            responseObserver.onNext(SquareRootResponse.newBuilder()
+                    .setNumberRoot(numberRoot)
+                    .build());
+
+            responseObserver.onCompleted();
+        }else {
+            // Construct the exception
+            responseObserver.onError(Status.INVALID_ARGUMENT
+                    .withDescription("The sent number is not positive")
+                    .augmentDescription("Number sent:" + number)
+                    .asRuntimeException());
+        }
     }
 
     private void primedecompoAlgo(int entry, StreamObserver<PrimeDecompoResponse> responseObserver) {

@@ -50,6 +50,17 @@ message FindMaximumResponse {
     int32 result = 1;
 }
 
+/********************
+*   SQUARE ROOT
+*********************/
+message SquareRootRequest {
+    int32 number = 1;
+}
+
+message SquareRootResponse {
+    double number_root = 1;
+}
+
 service CalculatorService {
     // Unary
     rpc sum(ToSumRequest) returns (ToSumResponse) {};
@@ -62,4 +73,8 @@ service CalculatorService {
 
     // find maximum
     rpc findMaximum(stream FindMaximumRequest) returns (stream FindMaximumResponse) {};
+
+    //error handling
+    // This RPC will thrown an execption if the send number is negative
+    rpc squareRoot(SquareRootRequest) returns (SquareRootResponse) {};
 }

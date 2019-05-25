@@ -4,6 +4,7 @@ import com.proto.calculator.*;
 import com.proto.calculator.CalculatorServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Arrays;
@@ -28,7 +29,8 @@ public class CalculatorClient {
 //        doSumCall(channel);
 //        doPrimeDecompoCall(channel);
 //        doComputeAverage(channel);
-        doFindMaximum(channel);
+//        doFindMaximum(channel);
+        doSquareRootWithErrorCall(channel);
         channel.shutdown();
     }
 
@@ -152,5 +154,21 @@ public class CalculatorClient {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private void doSquareRootWithErrorCall(ManagedChannel channel) {
+        CalculatorServiceGrpc.CalculatorServiceBlockingStub blockingStub = CalculatorServiceGrpc.newBlockingStub(channel);
+
+        int number = -1;
+        try {
+
+            blockingStub.squareRoot(SquareRootRequest.newBuilder().setNumber(number).build());
+        }catch(StatusRuntimeException e){
+
+            System.out.println("Got an exception for square root");
+            e.printStackTrace();
+
+        }
+
     }
 }
