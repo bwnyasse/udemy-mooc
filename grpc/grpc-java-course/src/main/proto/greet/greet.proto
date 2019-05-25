@@ -41,18 +41,28 @@ message GreetEveryoneResponse {
     string result = 1;
 }
 
+message GreetWithDeadLineRequest {
+    Greeting greeting = 1;
+}
+
+message GreetWithDeadLineResponse {
+    string result = 1;
+}
+
 service GreetService {
     // Unary
-    rpc Greet (GreetRequest) returns (GreetResponse) {
-    };
+    rpc Greet (GreetRequest) returns (GreetResponse) {};
 
     // server streaming
-    rpc GreetManyTimes (GreetManyTimesRequest) returns (stream GreetManyTimesResponse) {
-    };
+    rpc GreetManyTimes (GreetManyTimesRequest) returns (stream GreetManyTimesResponse) {};
 
     // Client streaming
     rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse){};
 
     // Bi directional streaming
     rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
+
+    // rpc with Deadline
+    // this rpc will complete no less than 300 ms
+    rpc GreetWithDeadLine(GreetWithDeadLineRequest) returns (GreetWithDeadLineResponse) {};
 }

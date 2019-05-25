@@ -2,6 +2,7 @@ package com.github.bwnyasse.grpc.greeting.server;
 
 import com.proto.greet.*;
 import com.proto.greet.GreetServiceGrpc.GreetServiceImplBase;
+import io.grpc.Context;
 import io.grpc.stub.StreamObserver;
 
 import java.util.stream.Stream;
@@ -110,10 +111,37 @@ public class GreetServiceImpl extends GreetServiceImplBase {
 
             @Override
             public void onCompleted() {
-                responseObserver.onCompleted();;
+                responseObserver.onCompleted();
+                ;
             }
         };
 
         return streamObserver;
+    }
+
+    @Override
+    public void greetWithDeadLine(GreetWithDeadLineRequest request, StreamObserver<GreetWithDeadLineResponse> responseObserver) {
+
+        Context current = Context.current();
+        try {
+            for (int i = 0; i < 3; i++) {
+
+                if (current.isCancelled()) {
+                    return;
+                }
+                System.out.println("sleep for 100ms");
+                Thread.sleep(100);
+
+            }
+
+            System.out.println("Send Response");
+            responseObserver.onNext(GreetWithDeadLineResponse.newBuilder()
+                    .setResult("Hello " + request.getGreeting().getFirstName())
+                    .build());
+
+            responseObserver.onCompleted();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

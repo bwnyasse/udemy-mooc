@@ -2,8 +2,7 @@ package com.github.bwnyasse.grpc.greeting.client;
 
 import com.proto.greet.*;
 import com.proto.greet.GreetServiceGrpc;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.*;
 import io.grpc.stub.StreamObserver;
 
 import java.util.ArrayList;
@@ -30,10 +29,11 @@ public class GreetingClient {
 
 
         // ******* Start - Do something
-        doUnaryCall(channel);
-        doServerStreamingCall(channel);
-        doClientStreamingCall(channel);
-        doBiDiStreamingCall(channel);
+//        doUnaryCall(channel);
+//        doServerStreamingCall(channel);
+//        doClientStreamingCall(channel);
+//        doBiDiStreamingCall(channel);
+        doUnaryCallWithDeadLine(channel);
         // ******** End - Do something
 
         System.out.println("Shutting down the channel");
@@ -177,6 +177,33 @@ public class GreetingClient {
             latch.await(3L, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void doUnaryCallWithDeadLine(ManagedChannel channel){
+        // create the client ( blocking - synchronuous )
+        GreetServiceGrpc.GreetServiceBlockingStub greetClient = GreetServiceGrpc.newBlockingStub(channel);
+        singleHandleRequestWithDeadLine(greetClient, 3000);
+        singleHandleRequestWithDeadLine(greetClient, 100);
+
+    }
+
+    private void singleHandleRequestWithDeadLine(GreetServiceGrpc.GreetServiceBlockingStub greetClient , int deadLine ){
+        try {
+
+            System.out.println("Send a request with " + deadLine + " ms");
+            GreetWithDeadLineResponse response = greetClient.withDeadline(Deadline.after(deadLine, TimeUnit.MILLISECONDS))
+                    .greetWithDeadLine(GreetWithDeadLineRequest
+                            .newBuilder()
+                            .setGreeting(Greeting.newBuilder().setFirstName("Boris-Wilfried").build())
+                            .build());
+            System.out.println(response.getResult());
+        }catch (StatusRuntimeException ex){
+            if(ex.getStatus() == Status.DEADLINE_EXCEEDED){
+                System.out.println("DeadLine has been exceed, we don't want the response");
+            }else{
+                ex.printStackTrace();
+            }
         }
     }
 }
